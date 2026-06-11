@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import {
   LayoutDashboard,
   FileSearch,
@@ -12,6 +13,9 @@ import {
   HelpCircle,
   Scale,
   Globe,
+  LogOut,
+  User,
+  Crown,
 } from "lucide-react";
 import {
   Sidebar,
@@ -31,6 +35,7 @@ import { useLanguage } from "@/components/language-provider";
 export function AppSidebar() {
   const pathname = usePathname();
   const { tr, locale, setLocale } = useLanguage();
+  const { data: session } = useSession();
 
   const navItems = [
     { href: "/dashboard", label: tr.nav.dashboard, icon: LayoutDashboard },
@@ -41,6 +46,7 @@ export function AppSidebar() {
   ];
 
   const bottomItems = [
+    { href: "/pricing", label: locale === "hi" ? "प्लान" : "Pricing", icon: Crown },
     { href: "/settings", label: tr.nav.settings, icon: Settings },
     { href: "/help", label: tr.nav.help, icon: HelpCircle },
   ];
@@ -100,7 +106,13 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4">
+      <SidebarFooter className="p-4 space-y-2">
+        {session?.user && (
+          <div className="flex items-center gap-2 px-2 py-1 text-sm text-muted-foreground">
+            <User className="h-4 w-4" />
+            <span className="truncate">{session.user.name || session.user.email}</span>
+          </div>
+        )}
         <Button
           variant="outline"
           size="sm"
@@ -109,6 +121,15 @@ export function AppSidebar() {
         >
           <Globe className="h-4 w-4 mr-2" />
           {locale === "hi" ? "English" : "हिंदी"}
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full text-muted-foreground"
+          onClick={() => signOut({ callbackUrl: "/login" })}
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          {locale === "hi" ? "लॉगआउट" : "Logout"}
         </Button>
       </SidebarFooter>
     </Sidebar>

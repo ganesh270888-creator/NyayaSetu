@@ -68,6 +68,7 @@ model User {
   phone         String?   @unique
   emailVerified DateTime?
   image         String?
+  passwordHash  String?
   role          UserRole  @default(MSME_OWNER)
   language      Language  @default(HI)
   businessName  String?

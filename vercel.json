@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "regions": ["bom1"],
+  "env": {
+    "DATABASE_URL": "@database-url",
+    "AUTH_SECRET": "@auth-secret",
+    "OPENAI_API_KEY": "@openai-api-key",
+    "RAZORPAY_KEY_ID": "@razorpay-key-id",
+    "RAZORPAY_KEY_SECRET": "@razorpay-key-secret"
+  }
+}

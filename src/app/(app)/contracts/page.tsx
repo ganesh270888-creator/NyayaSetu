@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { FileSearch, Upload, AlertTriangle, CheckCircle, XCircle, Shield } from "lucide-react";
+import { useState, useRef } from "react";
+import { FileSearch, Upload, AlertTriangle, CheckCircle, XCircle, Shield, FileUp, Save } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,8 +15,41 @@ export default function ContractsPage() {
   const { tr, locale, aiLang } = useLanguage();
   const [contractText, setContractText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<ContractAnalysis | null>(null);
   const [error, setError] = useState("");
+  const [saved, setSaved] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError("");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload/extract", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Upload failed");
+      }
+
+      const data = await res.json();
+      setContractText(data.text);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
 
   async function handleAnalyze() {
     if (!contractText.trim()) return;
@@ -41,6 +74,25 @@ export default function ContractsPage() {
     }
   }
 
+  async function saveToDatabase() {
+    if (!result) return;
+    try {
+      const res = await fetch("/api/cases", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "CONTRACT_REVIEW",
+          title: `Contract Analysis — Risk: ${result.overallRisk}`,
+          description: result.summary,
+          language: aiLang,
+          analysisResult: result,
+          input: { contractText: contractText.substring(0, 500) },
+        }),
+      });
+      if (res.ok) setSaved(true);
+    } catch { /* DB not available */ }
+  }
+
   const riskIcon = (severity: string) => {
     if (severity === "CRITICAL" || severity === "HIGH") return <XCircle className="h-4 w-4" />;
     if (severity === "MEDIUM") return <AlertTriangle className="h-4 w-4" />;
@@ -60,12 +112,35 @@ export default function ContractsPage() {
       {/* Input Section */}
       <Card>
         <CardHeader>
-          <CardTitle>{tr.contracts.paste}</CardTitle>
-          <CardDescription>
-            {locale === "hi"
-              ? "अनुबंध का पूरा टेक्स्ट नीचे पेस्ट करें"
-              : "Paste the full contract text below"}
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{tr.contracts.paste}</CardTitle>
+              <CardDescription>
+                {locale === "hi"
+                  ? "अनुबंध का टेक्स्ट पेस्ट करें या फाइल अपलोड करें (.pdf, .docx, .txt)"
+                  : "Paste contract text or upload a file (.pdf, .docx, .txt)"}
+              </CardDescription>
+            </div>
+            <div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.docx,.txt"
+                className="hidden"
+                onChange={handleFileUpload}
+              />
+              <Button
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+              >
+                <FileUp className="h-4 w-4 mr-2" />
+                {uploading
+                  ? locale === "hi" ? "अपलोड हो रहा है..." : "Uploading..."
+                  : tr.contracts.upload}
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <Textarea
@@ -115,12 +190,20 @@ export default function ContractsPage() {
                   <p className="text-sm text-muted-foreground">{tr.contracts.riskScore}</p>
                   <p className="text-4xl font-bold">{result.riskScore}/100</p>
                 </div>
-                <Badge
-                  className={`text-lg px-4 py-2 ${RISK_COLORS[result.overallRisk].bg} ${RISK_COLORS[result.overallRisk].text}`}
-                  variant="outline"
-                >
-                  {result.overallRisk}
-                </Badge>
+                <div className="flex items-center gap-3">
+                  <Button variant="outline" size="sm" onClick={saveToDatabase} disabled={saved}>
+                    <Save className="h-4 w-4 mr-1" />
+                    {saved
+                      ? locale === "hi" ? "सेव हो गया" : "Saved"
+                      : locale === "hi" ? "सेव करें" : "Save"}
+                  </Button>
+                  <Badge
+                    className={`text-lg px-4 py-2 ${RISK_COLORS[result.overallRisk].bg} ${RISK_COLORS[result.overallRisk].text}`}
+                    variant="outline"
+                  >
+                    {result.overallRisk}
+                  </Badge>
+                </div>
               </div>
             </CardContent>
           </Card>
