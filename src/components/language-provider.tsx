@@ -19,8 +19,16 @@ const LanguageContext = createContext<LanguageContextType>({
   aiLang: "HI",
 });
 
+function getInitialLocale(): Locale {
+  if (typeof window !== "undefined") {
+    const saved = localStorage.getItem("nyayasetu-lang");
+    if (saved === "hi" || saved === "en") return saved;
+  }
+  return "en";
+}
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("hi");
+  const [locale, setLocaleState] = useState<Locale>(getInitialLocale);
 
   const setLocale = useCallback((newLocale: Locale) => {
     setLocaleState(newLocale);

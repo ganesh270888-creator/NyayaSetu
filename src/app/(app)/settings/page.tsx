@@ -87,11 +87,11 @@ export default function SettingsPage() {
           </div>
           <div>
             <Label>GSTIN</Label>
-            <Input placeholder="22AAAAA0000A1Z5" maxLength={15} />
+            <Input placeholder={locale === "hi" ? "अपना GSTIN दर्ज करें" : "Enter your GSTIN"} maxLength={15} />
           </div>
           <div>
             <Label>{locale === "hi" ? "उद्यम नंबर" : "Udyam Number"}</Label>
-            <Input placeholder="UDYAM-XX-00-0000000" />
+            <Input placeholder={locale === "hi" ? "अपना उद्यम नंबर दर्ज करें" : "Enter your Udyam number"} />
           </div>
           <Button>{tr.common.save}</Button>
         </CardContent>

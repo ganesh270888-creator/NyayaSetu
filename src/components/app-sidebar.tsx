@@ -46,7 +46,7 @@ export function AppSidebar() {
   ];
 
   const bottomItems = [
-    { href: "/pricing", label: locale === "hi" ? "प्लान" : "Pricing", icon: Crown },
+    { href: "/pricing", label: locale === "hi" ? "प्लान" : "Plans", icon: Crown },
     { href: "/settings", label: tr.nav.settings, icon: Settings },
     { href: "/help", label: tr.nav.help, icon: HelpCircle },
   ];
