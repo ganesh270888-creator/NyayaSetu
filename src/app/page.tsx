@@ -1,65 +1,139 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Scale, FileSearch, FileText, Receipt, Landmark, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function Home() {
+const features = [
+  {
+    icon: FileSearch,
+    title: "Contract Risk Scanner",
+    titleHi: "अनुबंध जोखिम स्कैनर",
+    desc: "Upload any contract — get instant risk flags, missing clauses, and plain-language summaries in Hindi or English.",
+    descHi: "कोई भी अनुबंध अपलोड करें — हिंदी या अंग्रेजी में तुरंत जोखिम, लापता खंड और सरल सारांश पाएं।",
+  },
+  {
+    icon: FileText,
+    title: "Legal Notice Engine",
+    titleHi: "कानूनी नोटिस इंजन",
+    desc: "Draft demand notices, cheque bounce notices (Sec 138), eviction notices — formatted and legally sound.",
+    descHi: "मांग नोटिस, चेक बाउंस नोटिस (धारा 138), बेदखली नोटिस — कानूनी रूप से सही और स्वरूपित।",
+  },
+  {
+    icon: Receipt,
+    title: "GST Dispute Playbooks",
+    titleHi: "GST विवाद प्लेबुक",
+    desc: "Step-by-step guidance for show cause notices, appeals, and GST compliance issues with draft replies.",
+    descHi: "कारण बताओ नोटिस, अपील और GST अनुपालन मुद्दों के लिए चरणबद्ध मार्गदर्शन और उत्तर का मसौदा।",
+  },
+  {
+    icon: Landmark,
+    title: "Credit Recovery",
+    titleHi: "ऋण वसूली",
+    desc: "Recover dues via MSME Samadhan, SARFAESI, or legal notice — AI picks the best route for your case.",
+    descHi: "MSME समाधान, SARFAESI या कानूनी नोटिस से बकाया वसूलें — AI आपके मामले के लिए सबसे अच्छा रास्ता चुनता है।",
+  },
+];
+
+export default function LandingPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen">
+      <header className="border-b">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Scale className="h-8 w-8 text-primary" />
+            <span className="text-xl font-bold">NyayaSetu</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Link href="/dashboard">
+              <Button variant="outline">Login</Button>
+            </Link>
+            <Link href="/dashboard">
+              <Button>Get Started Free</Button>
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <section className="max-w-6xl mx-auto px-4 py-16 md:py-24 text-center">
+        <div className="inline-block mb-4 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
+          भारत का पहला AI कानूनी सहायक — India&apos;s First AI Legal OS for MSMEs
+        </div>
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+          कानूनी समस्या?<br />
+          <span className="text-primary">AI से समाधान पाएं।</span>
+        </h1>
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
+          अनुबंध समीक्षा, कानूनी नोटिस, GST विवाद और ऋण वसूली — सब कुछ हिंदी में,
+          AI की शक्ति से। वकील की फीस का 1/10 खर्च में।
+        </p>
+        <p className="text-base text-muted-foreground max-w-2xl mx-auto mb-8">
+          Contract reviews, legal notices, GST disputes, and credit recovery — powered by AI,
+          in Hindi and English. At 1/10th the cost of a lawyer.
+        </p>
+        <Link href="/dashboard">
+          <Button size="lg" className="text-lg px-8">
+            मुफ्त शुरू करें — Start Free
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        </Link>
+      </section>
+
+      <section className="max-w-6xl mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold text-center mb-12">
+          चार शक्तिशाली मॉड्यूल — Four Powerful Modules
+        </h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          {features.map((f) => (
+            <Card key={f.title} className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <f.icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">{f.titleHi}</CardTitle>
+                    <CardDescription>{f.title}</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm mb-2">{f.descHi}</p>
+                <p className="text-muted-foreground text-xs">{f.desc}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-primary text-primary-foreground py-16">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">
+            अपने व्यापार की कानूनी सुरक्षा शुरू करें
+          </h2>
+          <p className="text-lg mb-2 opacity-90">
+            Start Protecting Your Business Today
           </p>
+          <p className="mb-8 opacity-75">
+            50,000+ MSMEs अनसुलझे कानूनी मुद्दों से जूझ रहे हैं। आप अकेले नहीं हैं।
+          </p>
+          <Link href="/dashboard">
+            <Button size="lg" variant="secondary" className="text-lg px-8">
+              अभी शुरू करें — Get Started
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <footer className="border-t py-8">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <Scale className="h-5 w-5" />
+            <span>NyayaSetu — न्यायसेतु</span>
+          </div>
+          <p>&copy; 2026 NyayaSetu. Made in India for India.</p>
         </div>
-      </main>
+      </footer>
     </div>
   );
 }
