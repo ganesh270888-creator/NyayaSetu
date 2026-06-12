@@ -3,8 +3,20 @@ import { PrismaNeonHttp } from "@prisma/adapter-neon";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
+function cleanConnectionString(raw: string): string {
+  let s = raw.replace(/^﻿/, "").trim();
+  try {
+    const url = new URL(s);
+    url.searchParams.delete("channel_binding");
+    return url.toString();
+  } catch {
+    return s;
+  }
+}
+
 function createPrismaClient() {
-  const connectionString = process.env.DATABASE_URL!;
+  const raw = process.env.DATABASE_URL || process.env.POSTGRES_URL || "";
+  const connectionString = cleanConnectionString(raw);
 
   if (connectionString.startsWith("prisma+postgres://")) {
     return new PrismaClient({ accelerateUrl: connectionString });
